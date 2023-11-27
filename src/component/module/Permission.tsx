@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import React, { ReactElement, ReactNode, useEffect, useState } from "react";
+import React, { ReactElement, ReactNode, useEffect } from "react";
 
 type PermissionProps = {
   children: ReactNode;
@@ -20,10 +20,12 @@ export const Permission: React.FC<PermissionProps> = ({
     }
     return null;
   };
-  useEffect(() => {
-    const token = getLocalStorageValue("token");
-    if (!token) router.push("/login");
-  }, [router]);
 
-  return <>{children}</>;
+  const token = getLocalStorageValue("token");
+
+  useEffect(() => {
+    if (!token) router.push("/login");
+  }, [router, token]);
+
+  return <>{token && children}</>;
 };

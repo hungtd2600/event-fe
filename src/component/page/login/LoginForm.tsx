@@ -57,58 +57,60 @@ export const LoginForm: FC<LoginFormProps> = ({ onLogin, loading }) => {
       render={({ values }: FormRenderParams<LoginParams>) => {
         return (
           <Wrapper>
-            <Container component="main" maxWidth="xs">
-              <CssBaseline />
-              <Box
-                sx={{
-                  marginTop: 8,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                  <LockOutlinedIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                  Sign in
-                </Typography>
-                <Stack gap={2} pt={2}>
-                  <Box>
-                    <Field<string> name="username">
-                      {({ input, meta }: FieldRenderParams<string>) => (
-                        <InputText
-                          title="User Name"
-                          inputError={meta.touched && meta.error}
-                          inputProps={input}
-                        />
-                      )}
-                    </Field>
-                  </Box>
-                  <Box>
-                    <Field<string> name="password">
-                      {({ input, meta }: FieldRenderParams<string>) => (
-                        <InputText
-                          title="Password"
-                          inputError={meta.touched && meta.error}
-                          inputProps={{ ...input, type: "password" }}
-                        />
-                      )}
-                    </Field>
-                  </Box>
-                  <LoadingButton
-                    type="submit"
-                    loading={loading}
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                    onClick={() => onLogin(values)}
-                  >
-                    Sign In
-                  </LoadingButton>
-                </Stack>
-              </Box>
-            </Container>
+            <form>
+              <Container component="main" maxWidth="xs">
+                <CssBaseline />
+                <Box
+                  sx={{
+                    marginTop: 8,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+                    <LockOutlinedIcon />
+                  </Avatar>
+                  <Typography component="h1" variant="h5">
+                    Sign in
+                  </Typography>
+                  <Stack gap={2} pt={2}>
+                    <Box>
+                      <Field<string> name="username">
+                        {({ input, meta }: FieldRenderParams<string>) => (
+                          <InputText
+                            title="User Name"
+                            inputError={meta.touched && meta.error}
+                            inputProps={input}
+                          />
+                        )}
+                      </Field>
+                    </Box>
+                    <Box>
+                      <Field<string> name="password">
+                        {({ input, meta }: FieldRenderParams<string>) => (
+                          <InputText
+                            title="Password"
+                            inputError={meta.touched && meta.error}
+                            inputProps={{ ...input, type: "password" }}
+                          />
+                        )}
+                      </Field>
+                    </Box>
+                    <LoadingButton
+                      type="submit"
+                      loading={loading}
+                      fullWidth
+                      variant="contained"
+                      sx={{ mt: 3, mb: 2 }}
+                      onClick={() => onLogin(values)}
+                    >
+                      Sign In
+                    </LoadingButton>
+                  </Stack>
+                </Box>
+              </Container>
+            </form>
           </Wrapper>
         );
       }}

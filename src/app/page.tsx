@@ -5,9 +5,10 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { StyledParams } from "@/type/common";
 import axiosInstance from "@/utils/axios";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Pagination } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { Permission } from "@/component/module/Permission";
+import { Layout } from "@/component/module/Layout";
 
 type Event = {
   _id: string;
@@ -23,34 +24,59 @@ type Event = {
  * @return {JSX.Element} HomePage component.
  */
 const HomePage = (): ReactElement => {
+  const router = useRouter();
   const [events, setEvents] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const getEvents = async () => {
-    const res = await axiosInstance("/events");
+  const getEvents = async (page?: number) => {
+    const res = await axiosInstance("/events", { params: { page: page } });
+    setPageCount(res.data.last_page);
     setEvents(res.data.data);
   };
 
+  const handleChangePage = (_: any, page: number) => {
+    setCurrentPage(page);
+  };
+
+  useEffect(() => {
+    getEvents(currentPage);
+  }, [currentPage]);
+
   return (
     <Permission>
+      <Layout />
       <HomeWrapper>
         <Typography gutterBottom variant="h2">
           Home
         </Typography>
-        <Button onClick={() => getEvents()}>Get Event</Button>
+        <Button onClick={() => getEvents(currentPage)}>Get Event</Button>
         {events.map((event: Event) => {
           return (
             <Box key={event._id}>
               <Typography>{event?.name}</Typography>
+              <img alt="s" src={event.imageUrl} width="100%" />
             </Box>
           );
         })}
+        <Box pt={2}>
+          {pageCount ? (
+            <Pagination
+              onChange={handleChangePage}
+              count={pageCount}
+              color="primary"
+            />
+          ) : (
+            <></>
+          )}
+        </Box>
       </HomeWrapper>
     </Permission>
   );
 };
 
 const HomeWrapper = styled(Stack)(({ theme }: StyledParams) => ({
-  padding: theme.spacing(4),
+  padding: theme.spacing(2),
   alignItems: "center",
 }));
 
