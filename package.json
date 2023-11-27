@@ -12,11 +12,14 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.18",
+    "@mui/lab": "^5.0.0-alpha.153",
     "@mui/material": "^5.14.18",
     "axios": "^1.6.2",
+    "final-form": "^4.20.10",
     "next": "14.0.3",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-final-form": "^6.5.9"
   },
   "devDependencies": {
     "@types/node": "^20",
