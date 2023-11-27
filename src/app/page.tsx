@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import { ReactElement, useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
@@ -9,6 +10,7 @@ import { Box, Button, Pagination } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { Permission } from "@/component/module/Permission";
 import { Layout } from "@/component/module/Layout";
+import dayjs from "dayjs";
 
 type Event = {
   _id: string;
@@ -53,10 +55,26 @@ const HomePage = (): ReactElement => {
         <Button onClick={() => getEvents(currentPage)}>Get Event</Button>
         {events.map((event: Event) => {
           return (
-            <Box key={event._id}>
-              <Typography>{event?.name}</Typography>
-              <img alt="s" src={event.imageUrl} width="100%" />
-            </Box>
+            <EventWrapper key={event._id}>
+              <Typography
+                color={"primary"}
+                width={"fit-content"}
+                margin={"auto"}
+                fontSize={24}
+                paddingBottom={1}
+              >
+                {event?.name}
+              </Typography>
+              <ImageStyled alt="event" src={event.imageUrl} />
+              {event?.date && (
+                <Typography>
+                  Ngày: {dayjs(event.date).format("DD-MM-YYYY")}
+                </Typography>
+              )}
+              {event.location && (
+                <Typography>Địa điểm: {event.location}</Typography>
+              )}
+            </EventWrapper>
           );
         })}
         <Box pt={2}>
@@ -78,6 +96,16 @@ const HomePage = (): ReactElement => {
 const HomeWrapper = styled(Stack)(({ theme }: StyledParams) => ({
   padding: theme.spacing(2),
   alignItems: "center",
+}));
+
+const EventWrapper = styled(Box)(({ theme }: StyledParams) => ({
+  margin: theme.spacing(2, 0),
+}));
+
+const ImageStyled = styled("img")(({ theme }: StyledParams) => ({
+  width: "100%",
+  borderRadius: 20,
+  border: "1px solid #ccc",
 }));
 
 export default HomePage;
