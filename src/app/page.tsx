@@ -1,22 +1,14 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useCallback, useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
-import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { StyledParams } from "@/type/common";
 import axiosInstance from "@/utils/axios";
-import { Box, Button } from "@mui/material";
-import { useRouter } from "next/navigation";
+import { Box, Button, Pagination, Stack } from "@mui/material";
 import { Permission } from "@/component/module/Permission";
-
-type Event = {
-  _id: string;
-  name: string;
-  date: Date;
-  description: string;
-  imageUrl: string;
-  location: string;
-};
+import { Layout } from "@/component/module/Layout";
+import { Event, EventProps } from "@/component/page/home/Event";
 
 /**
  * HomePage component page.
@@ -24,33 +16,68 @@ type Event = {
  */
 const HomePage = (): ReactElement => {
   const [events, setEvents] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const getEvents = async () => {
-    const res = await axiosInstance("/events");
-    setEvents(res.data.data);
+  const getEvents = useCallback(
+    async (page?: number) => {
+      try {
+        const res = await axiosInstance("/events", { params: { page: page } });
+        setPageCount(res.data.last_page);
+        setEvents(res.data.data);
+      } catch (error) {
+        alert("Có lỗi xảy ra, vui lòng thử lại");
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [currentPage]
+  );
+
+  const handleChangePage = (_: any, page: number) => {
+    setCurrentPage(page);
   };
+
+  useEffect(() => {
+    getEvents(currentPage);
+  }, [currentPage, getEvents]);
 
   return (
     <Permission>
+      <Layout />
       <HomeWrapper>
         <Typography gutterBottom variant="h2">
           Home
         </Typography>
-        <Button onClick={() => getEvents()}>Get Event</Button>
-        {events.map((event: Event) => {
+        <Button onClick={() => getEvents(currentPage)}>Get Event</Button>
+        {events.map((event: EventProps, index: number) => {
           return (
-            <Box key={event._id}>
-              <Typography>{event?.name}</Typography>
-            </Box>
+            <Event
+              key={index}
+              name={event.name}
+              date={event.date}
+              imageUrl={event.imageUrl}
+              location={event.location}
+            />
           );
         })}
+        <Box pt={2}>
+          {pageCount ? (
+            <Pagination
+              onChange={handleChangePage}
+              count={pageCount}
+              color="primary"
+            />
+          ) : (
+            <></>
+          )}
+        </Box>
       </HomeWrapper>
     </Permission>
   );
 };
 
 const HomeWrapper = styled(Stack)(({ theme }: StyledParams) => ({
-  padding: theme.spacing(4),
+  padding: theme.spacing(2),
   alignItems: "center",
 }));
 
